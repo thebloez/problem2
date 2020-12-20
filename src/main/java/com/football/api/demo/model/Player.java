@@ -1,36 +1,31 @@
 package com.football.api.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.Date;
+import java.sql.Date;
+import java.util.HashSet;
+import java.util.Set;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "player")
+@Setter
+@Getter
 public class Player extends AuditModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String playername;
-    private String dob;
+    private int id;
+    private String playerName;
     private String pob;
-    private String height;
-    private String weight;
-    private String citizenship;
     private String foot;
-    private String position;
-    // TODO 2 : create relation field with lazy
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "club_code", nullable = false)
-    @JsonIgnore
-    private Club club;
+    @Basic
+    private Date dob;
+    private int height;
+    private int weight;
+    private String clubCode;
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ID_PLAYER")
+    Set<PlayerPosition> positionList = new HashSet<>();
 }
