@@ -1,12 +1,13 @@
 package com.football.api.demo.controller;
 
+import com.football.api.demo.AppConstants;
 import com.football.api.demo.exception.ResourceNotFoundException;
 import com.football.api.demo.model.Player;
+import com.football.api.demo.payload.PagedResponse;
 import com.football.api.demo.payload.request.EnlistRequest;
 import com.football.api.demo.repository.ClubRepository;
 import com.football.api.demo.repository.PlayerRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import com.football.api.demo.service.FootballService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,14 +19,20 @@ public class PlayerController {
 
     private ClubRepository clubRepository;
 
-    public PlayerController(PlayerRepository playerRepository, ClubRepository clubRepository) {
+    private FootballService footballService;
+
+    public PlayerController(PlayerRepository playerRepository, ClubRepository clubRepository, FootballService footballService) {
         this.playerRepository = playerRepository;
         this.clubRepository = clubRepository;
+        this.footballService = footballService;
     }
 
     @GetMapping("/all")
-    public Page<Player> getAllPlayers(Pageable page){
-        return playerRepository.findAll(page);
+    public PagedResponse<Player> getAllPlayers(@RequestParam(value = "page",
+            defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int page,
+                                               @RequestParam(value = "size",
+                                                       defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int size){
+        return footballService.getAllPlayers(page, size);
     }
 
     @PostMapping(value = "/enlist")
